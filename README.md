@@ -4,4 +4,4 @@ Ecommerce app built with React Native, Animated API, React Navigation 5 and Redu
 
 ## Previews
 
-![alt text](https://github.com/Jonnylie/Movie-Kiosk/blob/master/app/assets/Demo-app.gif)
+![alt text](https://github.com/Jonnylie/Ecommerce/blob/master/app/assets/Demo-app.gif)
