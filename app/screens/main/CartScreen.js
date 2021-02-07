@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Image,
+  Button,
   FlatList,
   Dimensions,
   SafeAreaView,
@@ -14,11 +15,62 @@ import { connect } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
+const boxWidth = width * 0.9;
+const buttonWidth = boxWidth * 0.9;
 const SPACING = 10;
 const ITEM_SIZE = Platform.OS === "ios" ? width * 0.72 : width * 0.74;
 
 const Rectangle = ({ item }) => {
   return <View style={[styles.boxColor, { backgroundColor: item.color }]} />;
+};
+
+const CartFooter = () => {
+  return (
+    <View
+      style={{
+        alignSelf: "center",
+        borderColor: "grey",
+        padding: 20,
+        backgroundColor: "white",
+        width: width * 0.9,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
+        elevation: 1,
+      }}
+    >
+      <Text style={{ marginBottom: 10 }}>
+        ORDER SUMMARY | *QuantityTotal* ITEM(S)
+      </Text>
+      <View
+        style={{
+          borderBottomColor: "grey",
+          borderBottomWidth: 0.5,
+          marginBottom: 10,
+        }}
+      />
+      <View style={{ flexDirection: "row", marginBottom: 10 }}>
+        <Text>ORDER TOTAL</Text>
+        <Text style={{ textAlign: "right", flex: 1 }}>`$*TotalPrice`</Text>
+      </View>
+      <View
+        style={{
+          borderBottomColor: "grey",
+          borderBottomWidth: 0.5,
+          marginBottom: 10,
+        }}
+      />
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={{ width: buttonWidth, alignSelf: "center" }}
+      >
+        <View style={styles.backgroundButton}>
+          <Text style={styles.button}>Place Order</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 function CartScreen({
@@ -30,7 +82,7 @@ function CartScreen({
   function TotalPrice(price, quantity) {
     return (price * quantity).toFixed(2);
   }
-  console.log(cartItems)
+  console.log(cartItems);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar hidden />
@@ -40,6 +92,7 @@ function CartScreen({
           keyExtractor={(item, index) => `${item}-${index}`}
           // style={{ backgroundColor: "dodgerblue" }}
           scrollEventThrottle={16}
+          ListFooterComponent={CartFooter}
           renderItem={({ item, index }) => {
             return (
               <TouchableOpacity
@@ -181,5 +234,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     color: "white",
+    alignSelf: "center",
   },
 });
