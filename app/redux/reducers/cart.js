@@ -3,7 +3,7 @@ export const cart = (state = [], action) => {
     case "ADD_TO_CART":
       let existed_item = state.find((cartItem) => {
         if (
-          cartItem.id === action.payload.id &&
+          cartItem.id === `${action.payload.id}${action.payload.size}` &&
           cartItem.size === action.payload.size
         ) {
           return true;
@@ -12,16 +12,16 @@ export const cart = (state = [], action) => {
       });
       if (existed_item) {
         state.map((item, key) => {
-          if (item.id == action.payload.id) {
+          if (item.id == `${action.payload.id}${action.payload.size}`) {
             state[key].quantity++;
           }
         });
         return [...state];
       } else {
         let _cart = {
-          id: action.payload.id,
+          id: `${action.payload.id}${action.payload.size}`,
           quantity: 1,
-          name: action.payload.name,
+          productName: action.payload.productName,
           imageUri: action.payload.imageUri,
           color: action.payload.color,
           price: action.payload.price,

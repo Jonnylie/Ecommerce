@@ -78,7 +78,7 @@ const Ticker = ({ scrollX }) => {
 };
 
 const Item = ({
-  type,
+  productName,
   price,
   imageUri,
   heading,
@@ -95,7 +95,7 @@ const Item = ({
   const obj = {
     imageUri: imageUri,
     color: color,
-    name: type,
+    productName: productName,
     id: id,
     price: price,
     quantity: quantity,
@@ -128,7 +128,7 @@ const Item = ({
     <TouchableOpacity activeOpacity={0.8} style={styles.itemStyle}>
       <SharedElement id={`item.${color}.image`} style={[styles.imageStyle]}>
         <Animated.Image
-          source={imageUri}
+          source={{uri: imageUri}}
           style={[styles.imageStyle, { transform: [{ scale }] }]}
         />
       </SharedElement>
@@ -259,7 +259,7 @@ function Detail({ navigation, route, addItemToCart }) {
       <Circle scrollX={scrollX} />
       <Animated.FlatList
         keyExtractor={(item) => item.key}
-        data={item.itemDetail}
+        data={item.variant}
         renderItem={({ item, index }) => (
           <Item
             {...item}
@@ -295,8 +295,9 @@ function Detail({ navigation, route, addItemToCart }) {
 }
 
 Detail.sharedElements = (route, otherRoute, showing) => {
+  const { item } = route.params;
   if (otherRoute.name === "List" && showing) {
-    return cloth.map((item) => `item.${item.color}.image`);
+    return item.variant.map((item) => `item.${item.color}.image`);
   }
 };
 

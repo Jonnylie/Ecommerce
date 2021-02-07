@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import cloth from "../../data/cloth";
 import data from "../../data/data";
 import {
@@ -17,6 +17,8 @@ import {
   Animated,
 } from "react-native";
 import { SharedElement } from "react-navigation-shared-element";
+import * as firebase from 'firebase'
+import 'firebase/firestore';  
 
 export const tabs = ["Headphones", "Headset", "Earphones", "Wireless"];
 const { width, height } = Dimensions.get("window");
@@ -25,6 +27,9 @@ const ITEM_SIZE = Platform.OS === "ios" ? width * 0.72 : width * 0.74;
 const EMPTY_ITEM_SIZE = (width - ITEM_SIZE) / 2;
 
 export default function LandingScreen({ navigation }) {
+  const [products, setProducts] = React.useState([]);
+  const [categories, setCategories] = React.useState([]);
+  const dbh = firebase.firestore();
   const [selectedTab, setSelectedTab] = React.useState(tabs[0]);
   const initialIndex = 2;
   const initialIndex2 = 1;
@@ -35,12 +40,33 @@ export default function LandingScreen({ navigation }) {
   const scrollX2 = React.useRef(new Animated.Value(initialIndex2 * ITEM_SIZE))
     .current;
 
+  useEffect(() => {
+    const productsData = dbh.collection('products')
+    .doc('new_arrivals')
+    .onSnapshot(documentSnapshot => {
+      let data = documentSnapshot.data();
+      data.items.unshift({ key: "left-spacer" })
+      data.items.push({ key: "right-spacer" })
+      setProducts(data);
+    });
+
+    const categoryList = dbh.collection('categories')
+    .doc('CtvYpI32IzXT9zs6WYha')
+    .onSnapshot(documentSnapshot => {
+      setCategories(documentSnapshot.data().items);
+      console.log(categories);
+    });
+
+    // Stop listening for updates when no longer required
+    return () => productsData() && categoryList();
+    }, []);
+  
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
         <StatusBar hidden />
         <FlatList
-          data={tabs}
+          data={categories}
           keyExtractor={(item, index) => `${item}-${index}`}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -72,8 +98,8 @@ export default function LandingScreen({ navigation }) {
               </TouchableOpacity>
             );
           }}
-        />
-        <Text
+        /> 
+        {products.items && <Text
           style={{
             alignSelf: "center",
             fontWeight: "800",
@@ -82,10 +108,10 @@ export default function LandingScreen({ navigation }) {
           }}
         >
           New Arrivals
-        </Text>
-        <Animated.FlatList
+        </Text>}
+        {products.items && <Animated.FlatList
           showsHorizontalScrollIndicator={false}
-          data={cloth}
+          data={products.items}
           keyExtractor={(item) => item.key}
           horizontal
           height={400}
@@ -148,15 +174,15 @@ export default function LandingScreen({ navigation }) {
                     id={`item.${item.color}.image`}
                     style={styles.image}
                   >
-                    <Image source={item.imageUri} style={styles.image} />
+                    <Image source={{ uri: item.imageUri}} style={styles.image} />
                   </SharedElement>
-                  <Text style={styles.type}>{item.type}</Text>
+                  <Text style={styles.type}>{item.productName}</Text>
                   <Text style={styles.subType}>{"$" + item.price}</Text>
                 </Animated.View>
               </TouchableOpacity>
             );
           }}
-        />
+        />}
         <Text
           style={{
             alignSelf: "center",

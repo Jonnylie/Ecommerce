@@ -30,7 +30,15 @@ import rootReducer from "./app/redux/reducers";
 import thunk from "redux-thunk";
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
-const firebaseConfig = {};
+var firebaseConfig = {
+  apiKey: "AIzaSyAkJJXB6dQzE3TCaT0By0cS7VxwbutTUmE",
+  authDomain: "digitalfashion-cab77.firebaseapp.com",
+  projectId: "digitalfashion-cab77",
+  storageBucket: "digitalfashion-cab77.appspot.com",
+  messagingSenderId: "554097542048",
+  appId: "1:554097542048:web:cc0632034c0527c1c19ac5",
+  measurementId: "G-3G62PW0VHS"
+};
 
 // Initialize Firebase
 if (firebase.apps.length === 0) {
@@ -44,14 +52,6 @@ LogBox.ignoreLogs([
 LogBox.ignoreLogs([
   "VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.",
 ]);
-
-const dbh = firebase.firestore();
-
-dbh.collection("characters").doc("mario").set({
-  employment: "plumber",
-  outfitColor: "red",
-  specialAttack: "fireball",
-});
 
 const Stack = createSharedElementStackNavigator();
 

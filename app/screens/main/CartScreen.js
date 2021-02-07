@@ -30,6 +30,7 @@ function CartScreen({
   function TotalPrice(price, quantity) {
     return (price * quantity).toFixed(2);
   }
+  console.log(cartItems)
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar hidden />
@@ -52,9 +53,9 @@ function CartScreen({
                   flexDirection: "row",
                 }}
               >
-                <Image source={item.imageUri} style={styles.image} />
+                <Image source={{ uri: item.imageUri }} style={styles.image} />
                 <View style={styles.info}>
-                  <Text style={styles.productName}>{item.name}</Text>
+                  <Text style={styles.productName}>{item.productName}</Text>
                   <View
                     style={{
                       flexDirection: "row",
@@ -150,6 +151,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     flex: 1,
     marginVertical: 20,
+    width: 200,
+    height: 200,
   },
   boxColor: {
     width: 30,
