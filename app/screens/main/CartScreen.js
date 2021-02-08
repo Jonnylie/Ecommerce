@@ -24,7 +24,8 @@ const Rectangle = ({ item }) => {
   return <View style={[styles.boxColor, { backgroundColor: item.color }]} />;
 };
 
-const CartFooter = () => {
+function CartFooter({ cartItems }) {
+  const totalPrice = cartItems.totalPrice.toFixed(2);
   return (
     <View
       style={{
@@ -40,9 +41,9 @@ const CartFooter = () => {
         elevation: 1,
       }}
     >
-      <Text style={{ marginBottom: 10 }}>
-        ORDER SUMMARY | *QuantityTotal* ITEM(S)
-      </Text>
+      <Text
+        style={{ marginBottom: 10 }}
+      >{`ORDER SUMMARY | ${cartItems.numberCart} ITEM(S)`}</Text>
       <View
         style={{
           borderBottomColor: "grey",
@@ -52,7 +53,7 @@ const CartFooter = () => {
       />
       <View style={{ flexDirection: "row", marginBottom: 10 }}>
         <Text>ORDER TOTAL</Text>
-        <Text style={{ textAlign: "right", flex: 1 }}>`$*TotalPrice`</Text>
+        <Text style={{ textAlign: "right", flex: 1 }}>{totalPrice}</Text>
       </View>
       <View
         style={{
@@ -71,7 +72,7 @@ const CartFooter = () => {
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 function CartScreen({
   cartItems,
@@ -86,13 +87,13 @@ function CartScreen({
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar hidden />
-      {cartItems.length > 0 ? (
+      {cartItems.Carts.length > 0 ? (
         <FlatList
-          data={cartItems}
+          data={cartItems.Carts}
           keyExtractor={(item, index) => `${item}-${index}`}
           // style={{ backgroundColor: "dodgerblue" }}
           scrollEventThrottle={16}
-          ListFooterComponent={CartFooter}
+          ListFooterComponent={() => <CartFooter cartItems={cartItems} />}
           renderItem={({ item, index }) => {
             return (
               <TouchableOpacity

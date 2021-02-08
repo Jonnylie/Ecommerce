@@ -15,7 +15,7 @@ const CartIcon = ({ color, currentCart }) => {
 };
 
 const mapStateToProps = (store) => ({
-  currentCart: store.cartState.length,
+  currentCart: store.cartState.numberCart,
 });
 
 export default connect(mapStateToProps, null)(CartIcon);
