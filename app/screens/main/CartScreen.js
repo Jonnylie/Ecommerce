@@ -11,6 +11,7 @@ import {
   StatusBar,
   TouchableOpacity,
 } from "react-native";
+import LottieView from "lottie-react-native";
 import { connect } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import * as firebase from "firebase";
@@ -36,8 +37,10 @@ function CartFooter({ cartItems, navigation, setIsLoading }) {
       .collection("orders")
       .add(cartItems)
       .then(() => {
-        setTimeout(async () => setIsLoading(false), 3000);
-        setTimeout(async () => navigation.navigate("List"), 3000);
+        setTimeout(async () => {
+          await setIsLoading(false);
+          await navigation.navigate("List");
+        }, 2500);
       });
   };
 
@@ -106,7 +109,11 @@ function CartScreen({
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator />
+        <LottieView
+          source={require("../../assets/order-has-been-placed.json")}
+          autoPlay
+          loop
+        />
       </View>
     );
   }
