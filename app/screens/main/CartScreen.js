@@ -4,7 +4,7 @@ import {
   Text,
   View,
   Image,
-  Button,
+  ActivityIndicator,
   FlatList,
   Dimensions,
   SafeAreaView,
@@ -13,6 +13,8 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
+import * as firebase from "firebase";
+import "firebase/firestore";
 
 const { width, height } = Dimensions.get("window");
 const boxWidth = width * 0.9;
@@ -24,8 +26,21 @@ const Rectangle = ({ item }) => {
   return <View style={[styles.boxColor, { backgroundColor: item.color }]} />;
 };
 
-function CartFooter({ cartItems }) {
+function CartFooter({ cartItems, navigation, setIsLoading }) {
   const totalPrice = cartItems.totalPrice.toFixed(2);
+
+  const PlaceOrder = () => {
+    setIsLoading(true);
+    const dbh = firebase.firestore();
+    dbh
+      .collection("orders")
+      .add(cartItems)
+      .then(() => {
+        setTimeout(async () => setIsLoading(false), 3000);
+        setTimeout(async () => navigation.navigate("List"), 3000);
+      });
+  };
+
   return (
     <View
       style={{
@@ -65,6 +80,7 @@ function CartFooter({ cartItems }) {
       <TouchableOpacity
         activeOpacity={0.8}
         style={{ width: buttonWidth, alignSelf: "center" }}
+        onPress={PlaceOrder}
       >
         <View style={styles.backgroundButton}>
           <Text style={styles.button}>Place Order</Text>
@@ -79,11 +95,21 @@ function CartScreen({
   removeItem,
   increaseQuantity,
   decreaseQuantity,
+  navigation,
 }) {
+  const [isLoading, setIsLoading] = React.useState(false);
+
   function TotalPrice(price, quantity) {
     return (price * quantity).toFixed(2);
   }
   console.log(cartItems);
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar hidden />
@@ -93,7 +119,13 @@ function CartScreen({
           keyExtractor={(item, index) => `${item}-${index}`}
           // style={{ backgroundColor: "dodgerblue" }}
           scrollEventThrottle={16}
-          ListFooterComponent={() => <CartFooter cartItems={cartItems} />}
+          ListFooterComponent={() => (
+            <CartFooter
+              cartItems={cartItems}
+              navigation={navigation}
+              setIsLoading={setIsLoading}
+            />
+          )}
           renderItem={({ item, index }) => {
             return (
               <TouchableOpacity
