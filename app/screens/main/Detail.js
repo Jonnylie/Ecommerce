@@ -20,15 +20,15 @@ const { width, height } = Dimensions.get("window");
 const LOGO_WIDTH = 220;
 const LOGO_HEIGHT = 40;
 const DOT_SIZE = 40;
-const TICKER_HEIGHT = 40;
+const TICKER_HEIGHT = 30;
 const CIRCLE_SIZE = width * 0.6;
 const SPACING = 10;
 const tabs = ["XS", "S", "M", "L"];
 
-const Circle = ({ scrollX }) => {
+const Circle = ({ scrollX, variant }) => {
   return (
     <View style={[StyleSheet.absoluteFillObject, styles.circleContainer]}>
-      {data.map(({ color }, index) => {
+      {variant.map(({ color }, index) => {
         const inputRange = [
           (index - 0.55) * width,
           index * width,
@@ -56,7 +56,7 @@ const Circle = ({ scrollX }) => {
     </View>
   );
 };
-const Ticker = ({ scrollX }) => {
+const Ticker = ({ scrollX, variant }) => {
   const inputRange = [-width, 0, width];
   const translateY = scrollX.interpolate({
     inputRange,
@@ -65,10 +65,10 @@ const Ticker = ({ scrollX }) => {
   return (
     <View style={styles.tickerContainer}>
       <Animated.View style={{ transform: [{ translateY }] }}>
-        {data.map(({ type }, index) => {
+        {variant.map(({ productName }, index) => {
           return (
             <Text key={index} style={styles.tickerText}>
-              {type}
+              {productName}
             </Text>
           );
         })}
@@ -126,9 +126,12 @@ const Item = ({
 
   return (
     <TouchableOpacity activeOpacity={0.8} style={styles.itemStyle}>
-      <SharedElement id={`item.${color}.image`} style={[styles.imageStyle]}>
+      <SharedElement
+        id={`item.${productName}${color}.image`}
+        style={[styles.imageStyle]}
+      >
         <Animated.Image
-          source={{uri: imageUri}}
+          source={{ uri: imageUri }}
           style={[styles.imageStyle, { transform: [{ scale }] }]}
         />
       </SharedElement>
@@ -168,7 +171,7 @@ const Item = ({
         >
           ${price}
         </Animated.Text>
-        <Animated.Text
+        {/* <Animated.Text
           style={[
             styles.description,
             { opacity, transform: [{ translateX: translateXHeading }] },
@@ -207,7 +210,7 @@ const Item = ({
               </TouchableOpacity>
             );
           })}
-        </View>
+        </View> */}
         <TouchableOpacity activeOpacity={0.8} onPress={() => addToCart(obj)}>
           <View style={styles.backgroundButton}>
             <Text style={styles.button}>ADD</Text>
@@ -218,7 +221,7 @@ const Item = ({
   );
 };
 
-const Pagination = ({ scrollX }) => {
+const Pagination = ({ scrollX, variant }) => {
   const inputRange = [-width, 0, width];
   const translateX = scrollX.interpolate({
     inputRange,
@@ -232,7 +235,7 @@ const Pagination = ({ scrollX }) => {
           { position: "absolute", transform: [{ translateX }] },
         ]}
       />
-      {data.map((item) => {
+      {variant.map((item) => {
         return (
           <View key={item.key} style={styles.paginationDotContainer}>
             <View
@@ -256,7 +259,7 @@ function Detail({ navigation, route, addItemToCart }) {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar style="auto" hidden />
-      <Circle scrollX={scrollX} />
+      <Circle scrollX={scrollX} variant={item.variant} />
       <Animated.FlatList
         keyExtractor={(item) => item.key}
         data={item.variant}
@@ -288,8 +291,8 @@ function Detail({ navigation, route, addItemToCart }) {
         }}
       />
       <Image style={styles.logo} source={require("../../assets/logo.png")} />
-      <Pagination scrollX={scrollX} />
-      <Ticker scrollX={scrollX} />
+      <Pagination scrollX={scrollX} variant={item.variant} />
+      <Ticker scrollX={scrollX} variant={item.variant} />
     </View>
   );
 }
@@ -297,7 +300,9 @@ function Detail({ navigation, route, addItemToCart }) {
 Detail.sharedElements = (route, otherRoute, showing) => {
   const { item } = route.params;
   if (otherRoute.name === "List" && showing) {
-    return item.variant.map((item) => `item.${item.color}.image`);
+    return item.variant.map(
+      (item) => `item.${item.productName}${item.color}.image`
+    );
   }
 };
 
@@ -337,7 +342,7 @@ const styles = StyleSheet.create({
     height: width * 0.75,
     resizeMode: "contain",
     // backgroundColor: "red",
-    // flex: 1,
+    flex: 1,
   },
   circle: {
     width: CIRCLE_SIZE,
@@ -395,7 +400,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     position: "absolute",
     left: 10,
-    bottom: 70,
+    bottom: 20,
     transform: [
       { translateX: -LOGO_WIDTH / 2 },
       { translateY: -LOGO_HEIGHT / 2 },
@@ -441,7 +446,6 @@ const styles = StyleSheet.create({
   tickerText: {
     fontSize: TICKER_HEIGHT,
     lineHeight: TICKER_HEIGHT,
-    textTransform: "uppercase",
     fontWeight: "800",
   },
   circleContainer: {

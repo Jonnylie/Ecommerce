@@ -39,7 +39,7 @@ function CartFooter({ cartItems, navigation, setIsLoading }) {
       .then(() => {
         setTimeout(async () => {
           await setIsLoading(false);
-          await navigation.navigate("List");
+          navigation.navigate("List");
         }, 2500);
       });
   };
@@ -159,7 +159,7 @@ function CartScreen({
                     <Text style={styles.name}>Color: </Text>
                     <Rectangle item={item} />
                   </View>
-                  <Text style={styles.name}>Size: {item.size}</Text>
+                  {/* <Text style={styles.name}>Size: {item.size}</Text> */}
                   <Text style={styles.price}>
                     {TotalPrice(item.price, item.quantity)}
                   </Text>
@@ -233,7 +233,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     fontWeight: "500",
     fontSize: 20,
-    marginTop: 20,
   },
   name: {
     fontWeight: "400",
@@ -253,6 +252,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   info: {
+    flex: 1,
     padding: 20,
     marginRight: 30,
   },

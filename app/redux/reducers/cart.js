@@ -9,8 +9,8 @@ export const cart = (state = initProduct, action) => {
     case "ADD_TO_CART":
       let existed_item = state.Carts.find((cartItem) => {
         if (
-          cartItem.id === `${action.payload.id}${action.payload.size}` &&
-          cartItem.size === action.payload.size
+          cartItem.id === `${action.payload.productName}${action.payload.color}`
+          // && cartItem.size === action.payload.size
         ) {
           return true;
         }
@@ -18,7 +18,9 @@ export const cart = (state = initProduct, action) => {
       });
       if (existed_item) {
         state.Carts.map((item, key) => {
-          if (item.id == `${action.payload.id}${action.payload.size}`) {
+          if (
+            item.id == `${action.payload.productName}${action.payload.color}`
+          ) {
             state.Carts[key].quantity++;
           }
         });
@@ -32,13 +34,13 @@ export const cart = (state = initProduct, action) => {
            whereas. state++ will use the value and then increment --> a: 1, b: 0 */
       } else {
         let _cart = {
-          id: `${action.payload.id}${action.payload.size}`,
+          id: `${action.payload.productName}${action.payload.color}`,
           quantity: 1,
           productName: action.payload.productName,
           imageUri: action.payload.imageUri,
           color: action.payload.color,
           price: action.payload.price,
-          size: action.payload.size,
+          // size: action.payload.size,
         };
         state.Carts.push(_cart);
         return {
