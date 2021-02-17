@@ -28,7 +28,7 @@ const tabs = ["XS", "S", "M", "L"];
 const Circle = ({ scrollX, variant }) => {
   return (
     <View style={[StyleSheet.absoluteFillObject, styles.circleContainer]}>
-      {variant.map(({ color }, index) => {
+      {variant.map(({ backgroundColor }, index) => {
         const inputRange = [
           (index - 0.55) * width,
           index * width,
@@ -48,7 +48,11 @@ const Circle = ({ scrollX, variant }) => {
             key={index}
             style={[
               styles.circle,
-              { backgroundColor: color, opacity, transform: [{ scale }] },
+              {
+                backgroundColor: backgroundColor,
+                opacity,
+                transform: [{ scale }],
+              },
             ]}
           />
         );
@@ -90,6 +94,7 @@ const Item = ({
   id,
   addToCart,
   quantity,
+  sharedElementId,
 }) => {
   const [selectedTab, setSelectedTab] = React.useState(tabs[0]);
   const obj = {
@@ -127,7 +132,7 @@ const Item = ({
   return (
     <TouchableOpacity activeOpacity={0.8} style={styles.itemStyle}>
       <SharedElement
-        id={`item.${productName}${color}.image`}
+        id={`item.${productName}${sharedElementId}.image`}
         style={[styles.imageStyle]}
       >
         <Animated.Image
@@ -301,7 +306,7 @@ Detail.sharedElements = (route, otherRoute, showing) => {
   const { item } = route.params;
   if (otherRoute.name === "List" && showing) {
     return item.variant.map(
-      (item) => `item.${item.productName}${item.color}.image`
+      (item) => `item.${item.productName}${item.sharedElementId}.image`
     );
   }
 };

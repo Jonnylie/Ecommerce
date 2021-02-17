@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import cloth from "../../data/cloth";
-import data from "../../data/data";
 import {
   View,
   StyleSheet,
@@ -81,45 +79,45 @@ export default function LandingScreen({ navigation }) {
     return () => newArrivals() && featured() && bestSellers() && categoryList();
   }, []);
 
-  return (
-    <ScrollView>
-      <SafeAreaView style={styles.container}>
-        <StatusBar hidden />
-        <FlatList
-          data={categories}
-          keyExtractor={(item, index) => `${item}-${index}`}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{ flexGrow: 0 }}
-          contentContainerStyle={{ padding: SPACING }}
-          renderItem={({ item: tab }) => {
-            return (
-              <TouchableOpacity onPress={() => setSelectedTab(tab)}>
-                <View
-                  style={[
-                    styles.pill,
-                    {
-                      backgroundColor:
-                        selectedTab === tab ? "orange" : "transparent",
-                    },
-                  ]}
-                >
-                  <Text
+  if (newArrivals.items && featured.items && bestSellers.items) {
+    return (
+      <ScrollView>
+        <SafeAreaView style={styles.container}>
+          <StatusBar hidden />
+          <FlatList
+            data={categories}
+            keyExtractor={(item, index) => `${item}-${index}`}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ flexGrow: 0 }}
+            contentContainerStyle={{ padding: SPACING }}
+            renderItem={({ item: tab }) => {
+              return (
+                <TouchableOpacity onPress={() => setSelectedTab(tab)}>
+                  <View
                     style={[
-                      styles.pillText,
+                      styles.pill,
                       {
-                        color: selectedTab === tab ? "white" : "#000",
+                        backgroundColor:
+                          selectedTab === tab ? "orange" : "transparent",
                       },
                     ]}
                   >
-                    {tab}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          }}
-        />
-        {newArrivals.items && (
+                    <Text
+                      style={[
+                        styles.pillText,
+                        {
+                          color: selectedTab === tab ? "white" : "#000",
+                        },
+                      ]}
+                    >
+                      {tab}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+          />
           <Text
             style={{
               alignSelf: "center",
@@ -130,8 +128,6 @@ export default function LandingScreen({ navigation }) {
           >
             New Arrivals
           </Text>
-        )}
-        {newArrivals.items && (
           <Animated.FlatList
             showsHorizontalScrollIndicator={false}
             data={newArrivals.items}
@@ -188,7 +184,7 @@ export default function LandingScreen({ navigation }) {
                       padding: SPACING * 2,
                       alignItems: "center",
                       transform: [{ translateY }],
-                      backgroundColor: item.color,
+                      backgroundColor: item.backgroundColor,
                       borderRadius: 34,
                       height: ITEM_SIZE,
                       alignSelf: "center",
@@ -202,7 +198,7 @@ export default function LandingScreen({ navigation }) {
                     }}
                   >
                     <SharedElement
-                      id={`item.${item.productName}${item.color}.image`}
+                      id={`item.${item.productName}${item.sharedElementId}.image`}
                       style={styles.image}
                     >
                       <Image
@@ -217,19 +213,17 @@ export default function LandingScreen({ navigation }) {
               );
             }}
           />
-        )}
-        <View style={{ marginBottom: 20 }}>
-          <Text
-            style={{
-              alignSelf: "center",
-              fontWeight: "800",
-              fontSize: 22,
-              marginBottom: 30,
-            }}
-          >
-            Featured
-          </Text>
-          {featured.items && (
+          <View style={{ marginBottom: 20 }}>
+            <Text
+              style={{
+                alignSelf: "center",
+                fontWeight: "800",
+                fontSize: 22,
+                marginBottom: 30,
+              }}
+            >
+              Featured
+            </Text>
             <Animated.FlatList
               showsHorizontalScrollIndicator={false}
               data={featured.items}
@@ -281,7 +275,7 @@ export default function LandingScreen({ navigation }) {
                           padding: SPACING * 2,
                           alignItems: "center",
                           // transform: [{ translateY }],
-                          backgroundColor: item.color,
+                          backgroundColor: item.backgroundColor,
                           borderRadius: 34,
                           height: width * 0.45,
                           marginBottom: 5,
@@ -307,19 +301,17 @@ export default function LandingScreen({ navigation }) {
                 );
               }}
             />
-          )}
-        </View>
-        <Text
-          style={{
-            alignSelf: "center",
-            fontWeight: "800",
-            fontSize: 22,
-            marginBottom: 30,
-          }}
-        >
-          Best Sellers
-        </Text>
-        {bestSellers.items && (
+          </View>
+          <Text
+            style={{
+              alignSelf: "center",
+              fontWeight: "800",
+              fontSize: 22,
+              marginBottom: 30,
+            }}
+          >
+            Best Sellers
+          </Text>
           <View style={{ alignItems: "center" }}>
             <Animated.FlatList
               data={bestSellers.items}
@@ -352,7 +344,7 @@ export default function LandingScreen({ navigation }) {
                           padding: SPACING * 2,
                           alignItems: "center",
                           // transform: [{ translateY }],
-                          backgroundColor: item.color,
+                          backgroundColor: item.backgroundColor,
                           borderRadius: 34,
                           height: width * 0.5,
                           marginBottom: 5,
@@ -377,9 +369,14 @@ export default function LandingScreen({ navigation }) {
               }}
             />
           </View>
-        )}
-      </SafeAreaView>
-    </ScrollView>
+        </SafeAreaView>
+      </ScrollView>
+    );
+  }
+  return (
+    <View>
+      <Text>Content is Loading</Text>
+    </View>
   );
 }
 
