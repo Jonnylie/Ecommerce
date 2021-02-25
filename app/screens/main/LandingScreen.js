@@ -17,6 +17,7 @@ import {
 import { SharedElement } from "react-navigation-shared-element";
 import * as firebase from "firebase";
 import "firebase/firestore";
+import LottieView from "lottie-react-native";
 
 export const tabs = ["Headphones", "Headset", "Earphones", "Wireless"];
 const { width, height } = Dimensions.get("window");
@@ -282,7 +283,7 @@ export default function LandingScreen({ navigation }) {
                         }}
                       >
                         <SharedElement
-                          id={`item.${item.productName}${item.color}.image`}
+                          id={`item.${item.productName}${item.sharedElementId}.image`}
                         >
                           <Image
                             source={{ uri: item.imageUri }}
@@ -351,7 +352,7 @@ export default function LandingScreen({ navigation }) {
                         }}
                       >
                         <SharedElement
-                          id={`item.${item.productName}${item.color}.image`}
+                          id={`item.${item.productName}${item.sharedElementId}.image`}
                         >
                           <Image
                             source={{ uri: item.imageUri }}
@@ -374,8 +375,13 @@ export default function LandingScreen({ navigation }) {
     );
   }
   return (
-    <View>
-      <Text>Content is Loading</Text>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <LottieView
+        source={require("../../assets/8707-loading.json")}
+        autoPlay
+        loop
+        speed={2}
+      />
     </View>
   );
 }

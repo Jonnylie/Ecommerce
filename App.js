@@ -22,6 +22,7 @@ import { NavigationContainer } from "@react-navigation/native";
 enableScreens();
 import * as firebase from "firebase";
 import "firebase/firestore";
+import LottieView from "lottie-react-native";
 
 import { Provider } from "react-redux";
 // import store from "./app/redux/store/index";
@@ -37,7 +38,7 @@ var firebaseConfig = {
   storageBucket: "digitalfashion-cab77.appspot.com",
   messagingSenderId: "554097542048",
   appId: "1:554097542048:web:cc0632034c0527c1c19ac5",
-  measurementId: "G-3G62PW0VHS"
+  measurementId: "G-3G62PW0VHS",
 };
 
 // Initialize Firebase
@@ -65,8 +66,10 @@ export default function App() {
     firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
         setUser({ loggedIn: false, loaded: true });
+        console.log("user doesn't exist");
       } else {
         setUser({ loggedIn: true, loaded: true });
+        console.log("user exist");
       }
     });
     // return () => {
@@ -76,8 +79,12 @@ export default function App() {
 
   if (!loaded) {
     return (
-      <View>
-        <Text>Loading</Text>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <LottieView
+          source={require("./app/assets/8707-loading.json")}
+          autoPlay
+          loop
+        />
       </View>
     );
   }

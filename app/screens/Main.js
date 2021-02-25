@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Detail from "./main/Detail";
 import Account from "./main/Account";
+import PurchcaseHistory from "./main/PurchaseHistory";
 import LandingScreen from "./main/LandingScreen";
 import { StyleSheet, Text, View } from "react-native";
 import { enableScreens } from "react-native-screens";
@@ -54,6 +55,15 @@ const Main = (props) => {
     );
   };
 
+  const myAccountNavigator = () => {
+    return (
+      <Stack.Navigator initialRouteName="MyAccount" headerMode="none">
+        <Stack.Screen name="MyAccount" component={Account} />
+        <Stack.Screen name="PurchaseHistory" component={PurchcaseHistory} />
+      </Stack.Navigator>
+    );
+  };
+
   return (
     <Tab.Navigator>
       <Tab.Screen
@@ -76,7 +86,7 @@ const Main = (props) => {
       />
       <Tab.Screen
         name="Account"
-        component={Account}
+        component={myAccountNavigator}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" size={24} color={color} />

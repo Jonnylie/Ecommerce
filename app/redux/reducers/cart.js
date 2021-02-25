@@ -73,6 +73,12 @@ export const cart = (state = initProduct, action) => {
         state.totalPrice -= action.payload.price;
         return { ...state };
       }
+    case "DELETE_ALL_ITEMS":
+      return {
+        numberCart: 0,
+        Carts: [],
+        totalPrice: 0,
+      };
   }
   return state;
 };

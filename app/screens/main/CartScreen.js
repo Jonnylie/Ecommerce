@@ -16,6 +16,7 @@ import { connect } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import * as firebase from "firebase";
 import "firebase/firestore";
+import SvgComponent from "../../assets/SvgComponent";
 
 const { width, height } = Dimensions.get("window");
 const boxWidth = width * 0.9;
@@ -27,10 +28,19 @@ const Rectangle = ({ item }) => {
   return <View style={[styles.boxColor, { backgroundColor: item.color }]} />;
 };
 
-function CartFooter({ cartItems, navigation, setIsLoading }) {
+function CartFooter({ cartItems, navigation, setIsLoading, deleteAllItems }) {
   const totalPrice = cartItems.totalPrice.toFixed(2);
 
   const PlaceOrder = () => {
+    const currentDate = new Date().toLocaleDateString();
+    const newCartItems = cartItems.Carts.map((v) => ({
+      ...v,
+      purchaseDate: currentDate,
+    }));
+    cartItems.purchaseTimestamp = firebase.firestore.Timestamp.now();
+    cartItems.Carts = newCartItems;
+    cartItems.userId = firebase.auth().currentUser.uid;
+    console.log(cartItems);
     setIsLoading(true);
     const dbh = firebase.firestore();
     dbh
@@ -38,8 +48,9 @@ function CartFooter({ cartItems, navigation, setIsLoading }) {
       .add(cartItems)
       .then(() => {
         setTimeout(async () => {
+          await deleteAllItems();
           await setIsLoading(false);
-          navigation.navigate("List");
+          await navigation.navigate("Account", { screen: "PurchaseHistory" });
         }, 2500);
       });
   };
@@ -99,13 +110,14 @@ function CartScreen({
   increaseQuantity,
   decreaseQuantity,
   navigation,
+  deleteAllItems,
 }) {
   const [isLoading, setIsLoading] = React.useState(false);
 
   function TotalPrice(price, quantity) {
     return (price * quantity).toFixed(2);
   }
-  console.log(cartItems);
+  // console.log(cartItems);
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -131,6 +143,7 @@ function CartScreen({
               cartItems={cartItems}
               navigation={navigation}
               setIsLoading={setIsLoading}
+              deleteAllItems={deleteAllItems}
             />
           )}
           renderItem={({ item, index }) => {
@@ -196,7 +209,23 @@ function CartScreen({
           }}
         />
       ) : (
-        <Text>Your cart is empty</Text>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <SvgComponent />
+          <Text style={{ fontWeight: "600", fontSize: 20, marginBottom: 10 }}>
+            Your cart is empty
+          </Text>
+          <Text>When you add your first item to cart, it will appear here</Text>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate("List")}
+          >
+            <View style={styles.backgroundButton}>
+              <Text style={styles.button}>Find product</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       )}
     </SafeAreaView>
   );
@@ -214,6 +243,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({ type: "INCREASE_QUANTITY", payload: product }),
     decreaseQuantity: (product) =>
       dispatch({ type: "DECREASE_QUANTITY", payload: product }),
+    deleteAllItems: () => dispatch({ type: "DELETE_ALL_ITEMS" }),
   };
 };
 

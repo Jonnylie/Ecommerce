@@ -11,8 +11,6 @@ import {
   Button,
   TouchableOpacity,
 } from "react-native";
-import data from "../../data/data";
-import cloth from "../../data/cloth";
 import { SharedElement } from "react-navigation-shared-element";
 import { connect } from "react-redux";
 
